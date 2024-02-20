@@ -9,6 +9,12 @@ import java.net.*;
 public class HuskyHandTracker {
     private final float SENSITIVITY = 10; // Positional sensitivity of the device
 
+    protected static final double DEFAULT_SS_DEADZONE  = 0.01;
+    protected static final double DEFAULT_FB_DEADZONE  = 0.01;
+    protected static final double DEFAULT_VERT_DEADZONE = 0.01;
+
+    protected static final double DEFAULT_ROT_DEADZONE = 1.0;
+
     public String pose;
     private double xPos; // Sideways
     private double yPos; // Height
@@ -27,6 +33,7 @@ public class HuskyHandTracker {
 
         String inputLine;
 
+        // Repeats every tick, getting info from the websocket
         while ((inputLine = in.readLine()) != null) {
             if ("ded".equals(inputLine)) {
                 System.out.println("Server closed");
@@ -68,26 +75,26 @@ public class HuskyHandTracker {
     }
 
     public double getPitch() {
-        return pitch;
+        return (Math.abs(pitch) > DEFAULT_ROT_DEADZONE) ? pitch : 0.0;
     }
 
     public double getRoll() {
-        return roll;
+        return (Math.abs(roll) > DEFAULT_ROT_DEADZONE) ? roll : 0.0;
     }
 
     public double getYaw() {
-        return yaw;
+        return (Math.abs(yaw) > DEFAULT_ROT_DEADZONE) ? yaw : 0.0;
     }
 
     public double getxPos() {
-        return xPos;
+        return (Math.abs(xPos) > DEFAULT_SS_DEADZONE) ? xPos : 0.0;
     }
 
     public double getyPos() {
-        return yPos;
+        return (Math.abs(yPos) > DEFAULT_VERT_DEADZONE) ? yPos : 0.0;
     }
 
     public double getzPos() {
-        return zPos;
+        return (Math.abs(zPos) > DEFAULT_FB_DEADZONE) ? zPos : 0.0;
     }
 }
